@@ -1,6 +1,8 @@
 # 0006: Agents draft memories; humans review them in PRs
 
-**Status:** Accepted (user), 2026-10-20
+**Status:** Accepted (user), 2026-10-20. **Amended by
+[0009](0009-memory-map-instead-of-line-review.md):** the team sees a memory
+map in each PR instead of reviewing every memory line by line.
 
 ## Context
 

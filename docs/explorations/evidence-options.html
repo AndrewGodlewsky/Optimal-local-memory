@@ -1,0 +1,349 @@
+<title>Evidence Options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, a comparison ledger, then one panel per option, like a design review packet */
+:root {
+  --bg: #f5f7f6;
+  --surface: #ffffff;
+  --fg: #16201e;
+  --muted: #586663;
+  --line: #d9e0de;
+  --accent: #0d6b66;
+  --accent-soft: #e1f0ee;
+  --good: #1d7a3e;
+  --good-soft: #e3f3e8;
+  --warn: #9a5b00;
+  --warn-soft: #fbefdc;
+  --bad: #a23a2e;
+  --bad-soft: #f8e4e1;
+  --font-display: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1413; --surface: #151d1c; --fg: #e4ecea; --muted: #97a6a3; --line: #2a3634;
+    --accent: #5cc2b9; --accent-soft: #15302d;
+    --good: #6fd08f; --good-soft: #15301f; --warn: #e9b35f; --warn-soft: #33270f; --bad: #f08b7e; --bad-soft: #3a1c18;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1413; --surface: #151d1c; --fg: #e4ecea; --muted: #97a6a3; --line: #2a3634;
+  --accent: #5cc2b9; --accent-soft: #15302d;
+  --good: #6fd08f; --good-soft: #15301f; --warn: #e9b35f; --warn-soft: #33270f; --bad: #f08b7e; --bad-soft: #3a1c18;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 72px;
+}
+.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.2rem; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+.eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+section { display: grid; gap: 16px; min-width: 0; }
+.lede { font-size: 1.12rem; color: var(--muted); }
+header { display: grid; gap: 14px; }
+.question {
+  border-left: 3px solid var(--accent); padding: 4px 0 4px 16px;
+  font-size: 1.2rem; font-weight: 600; max-width: 60ch;
+}
+nav { display: flex; flex-wrap: wrap; gap: 8px; }
+nav a {
+  font-size: 0.85rem; text-decoration: none; color: var(--fg);
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--surface);
+}
+nav a:hover { border-color: var(--accent); color: var(--accent); }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; font-family: var(--font-mono); font-size: 0.84rem; }
+.compare td:first-child { font-weight: 600; white-space: nowrap; }
+.pill {
+  display: inline-block; font-size: 0.76rem; font-weight: 600; border-radius: 999px;
+  padding: 1px 9px; white-space: nowrap;
+}
+.p-good { background: var(--good-soft); color: var(--good); }
+.p-warn { background: var(--warn-soft); color: var(--warn); }
+.p-bad { background: var(--bad-soft); color: var(--bad); }
+.p-acc { background: var(--accent-soft); color: var(--accent); }
+.options { display: grid; gap: 20px; }
+.option {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 22px; display: grid; gap: 14px; min-width: 0;
+}
+.option.rec { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.option-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px; }
+.letter {
+  font-family: var(--font-mono); font-weight: 500; font-size: 0.85rem;
+  color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; padding: 0 7px;
+}
+.kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 20px; font-size: 0.9rem; }
+.kv div { display: grid; gap: 2px; min-width: 0; }
+.kv b { font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.pc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.pc > div { min-width: 0; }
+.pc h4 { margin: 0 0 6px; font-size: 0.8rem; letter-spacing: 0.07em; text-transform: uppercase; }
+.pc .pros h4 { color: var(--good); }
+.pc .cons h4 { color: var(--bad); }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+li { max-width: 70ch; }
+.scope { border-top: 1px dashed var(--line); padding-top: 12px; display: grid; gap: 6px; }
+.scope h4 { margin: 0; font-size: 0.8rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent); }
+.note { font-size: 0.86rem; color: var(--muted); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; }
+.fact { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: grid; gap: 6px; font-size: 0.92rem; min-width: 0; }
+.fact strong { font-family: var(--font-display); }
+.callout { background: var(--accent-soft); border-radius: 10px; padding: 20px 22px; display: grid; gap: 10px; }
+ol.qs { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.path { display: grid; gap: 10px; }
+.step { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.step .when { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); padding-top: 2px; white-space: nowrap; }
+@media (prefers-reduced-motion: no-preference) { nav a { transition: border-color .15s, color .15s; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Optimal-local-memory · design exploration · 2026-10-20</span>
+  <h1>Evidence Options</h1>
+  <p class="question">What session evidence gets committed to the repo alongside memories, and how much of the OptChat gist do we actually build?</p>
+  <p class="lede">Memories are the product (decision 0004). Evidence is what a memory links back to when an agent needs the full story. This choice sets repo growth, harness coverage, cost, and how big v1 is.</p>
+  <nav aria-label="Sections">
+    <a href="#gist">Gist vs. proposal</a>
+    <a href="#research">What research changed</a>
+    <a href="#compare">Comparison</a>
+    <a href="#options">The five options</a>
+    <a href="#path">Suggested path</a>
+    <a href="#decide">Questions for you</a>
+  </nav>
+</header>
+
+<section id="gist">
+  <span class="eyebrow">Reference</span>
+  <h2>The gist's mechanisms vs. what we've proposed</h2>
+  <p>The <a href="https://gist.github.com/VictorTaelin/91837951a5ce5b38f341ec1ba1df6449">OptChat gist</a> is built on one promise: <em>nothing is ever lost</em>. Every message is kept verbatim, and a summary tree makes it navigable. Here is each piece of it, what the current proposal (Option B) does with it, and which options bring it back.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Gist mechanism</th><th>What the gist does</th><th>Current proposal (B)</th><th>Restored by</th></tr></thead>
+      <tbody>
+        <tr><td>Verbatim log</td><td>Every message, append-only, forever. Tool output clipped to 30k chars</td><td>Not shared. Optional local log only</td><td>D, E</td></tr>
+        <tr><td>512-byte summary tree</td><td>Cheap model compresses each message, then merges pairs up a binary tree</td><td>Not built. Memories are written directly by the working agent</td><td>C, D, E</td></tr>
+        <tr><td>Compaction tricks</td><td>Ruler, cut marker, up to 5 retries, 8 parallel calls, queues</td><td>Only the size check survives (validated in <code>memory_draft</code>)</td><td>C, D, E</td></tr>
+        <tr><td>Fixed-size view</td><td>64–128 KB of summaries of the whole chat on every call</td><td>Replaced by digest + search (decision 0008)</td><td>None; we don't own the agent loop</td></tr>
+        <tr><td><code>zoom(id, n)</code></td><td>Open a summary into its two halves, down to the message</td><td>Zoom from memory to its excerpts and commit/PR</td><td>C (to summaries), D (to verbatim)</td></tr>
+        <tr><td>"Say what you learned"</td><td>Agent writes findings into its reply so they survive summarizing</td><td>Becomes drafting memories</td><td>All options</td></tr>
+        <tr><td>"User's words matter most"</td><td>Compaction keeps user orders and corrections near-verbatim</td><td>Drafting prompt priority #1; excerpts quote the user</td><td>All options</td></tr>
+        <tr><td>Prompt-cache design</td><td>Batched merges, stable prefix, ~98% cache hits</td><td>Not applicable</td><td>None; the harness controls caching</td></tr>
+        <tr><td>"Never grep, only zoom"</td><td>Search banned; the tree is the only navigation</td><td>Search is the entry point</td><td>None; at team scale a single map can't be both complete and detailed</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">The trade in one line: the gist optimizes for one person never losing anything. We are optimizing for a team getting the right slice of knowledge. The options below differ in how much of "never losing anything" we pay to keep.</p>
+</section>
+
+<section id="research">
+  <span class="eyebrow">Research, 2026-10-20</span>
+  <h2>What research changed</h2>
+  <div class="facts">
+    <div class="fact"><strong>Copilot does expose sessions.</strong> VS Code (preview), Copilot CLI and Claude Code all pass hooks a transcript path. The coding agent runs hooks too.</div>
+    <div class="fact"><strong>But every format is "unstable".</strong> All three vendors say transcript files may change. Safer: build our own event log from hook fields (prompt, tool, args, result), close to the gist's log.</div>
+    <div class="fact"><strong>One hook location for Copilot.</strong> <code>.github/hooks/*.json</code> is read by VS Code, the CLI and the coding agent. Claude Code needs its own config.</div>
+    <div class="fact"><strong>Local transcripts expire.</strong> Claude Code deletes its own transcripts after 30 days by default. "Keep it local" only lasts if we write our own copy.</div>
+    <div class="fact"><strong>GitHub Models is retired</strong> (July 2026). A background summarizer needs a model API key, or Copilot CLI in Actions billed in AI Credits.</div>
+    <div class="fact"><strong>Repo size guidance:</strong> ideally under 1 GB, strongly advised under 5 GB. Git LFS: 10 GiB free, 250 GiB on Team plans.</div>
+  </div>
+  <p class="note">Full sources: <code>docs/research/2026-10-20-harness-capabilities.md</code>.</p>
+</section>
+
+<section id="compare">
+  <span class="eyebrow">At a glance</span>
+  <h2>Comparison</h2>
+  <div class="scroll">
+    <table class="compare">
+      <thead><tr><th>Option</th><th>Committed evidence</th><th>Repo growth / year*</th><th>Needs summarizer</th><th>Harness coverage</th><th>Secret risk</th><th>Teammates can zoom into</th><th>v1 scope</th></tr></thead>
+      <tbody>
+        <tr><td>A · Links only</td><td>Commit + PR links</td><td class="num">≈ 6 MB</td><td><span class="pill p-good">No</span></td><td><span class="pill p-good">All</span></td><td><span class="pill p-good">None</span></td><td>The diff and PR discussion</td><td><span class="pill p-good">S</span></td></tr>
+        <tr><td>B · Excerpts</td><td>Quotes inside each memory</td><td class="num">≈ 20 MB</td><td><span class="pill p-good">No</span></td><td><span class="pill p-good">All</span></td><td><span class="pill p-good">Low</span></td><td>The key quotes, errors, outputs</td><td><span class="pill p-good">S–M</span></td></tr>
+        <tr><td>C · + Session trees</td><td>B + each session's summary tree</td><td class="num">≈ 0.3–0.5 GB</td><td><span class="pill p-bad">Yes</span></td><td><span class="pill p-warn">Hooks needed</span></td><td><span class="pill p-warn">Medium</span></td><td>Summaries of every session</td><td><span class="pill p-warn">L</span></td></tr>
+        <tr><td>D · Full gist</td><td>C + raw event logs</td><td class="num">≈ 1–3 GB</td><td><span class="pill p-bad">Yes</span></td><td><span class="pill p-warn">Hooks needed</span></td><td><span class="pill p-bad">High</span></td><td>Everything, verbatim</td><td><span class="pill p-bad">XL</span></td></tr>
+        <tr><td>E · Off-history store</td><td>B in the repo; C or D in a separate store</td><td class="num">≈ 20 MB in code repo</td><td><span class="pill p-bad">Yes</span></td><td><span class="pill p-warn">Hooks needed</span></td><td><span class="pill p-warn">Medium–high</span></td><td>C or D, fetched on demand</td><td><span class="pill p-bad">L–XL</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">* Order-of-magnitude estimates, git-compressed, assuming 10 developers × 3 agent sessions a day × 250 working days (≈7,500 sessions a year), ≈200 logged events per session, ≈3 memories per session. Raw (uncompressed) sizes are roughly 3–4× higher. Git history is permanent: anything committed stays in every clone unless history is rewritten.</p>
+</section>
+
+<section id="options">
+  <span class="eyebrow">Detail</span>
+  <h2>The five options</h2>
+  <div class="options">
+
+    <article class="option" id="opt-a">
+      <div class="option-head"><span class="letter">A</span><h3>Links only</h3></div>
+      <p>Memories carry links to the commit and PR they came from. No other evidence. "Zoom" means opening the diff and PR discussion.</p>
+      <div class="kv">
+        <div><b>Committed</b>Memory files with <code>evidence: [commit, PR]</code></div>
+        <div><b>Local only</b>Nothing</div>
+        <div><b>Gist kept</b>Almost none of the evidence side</div>
+      </div>
+      <div class="pc">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Smallest possible; nothing new to capture</li>
+          <li>Works identically in every harness, including the coding agent</li>
+          <li>No secrets risk beyond what's already in the code</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>The conversation's reasoning ("why") is lost unless the memory itself captures it</li>
+          <li>PRs often say little about why; legacy lessons get thin</li>
+          <li>Doubtful memories can't be checked, which matters more now that memories aren't reviewed one by one (0009)</li>
+        </ul></div>
+      </div>
+      <div class="scope"><h4>Scope impact</h4><p>No capture work beyond drafting. Removes evidence from the design almost entirely. Weakest fit for "the why behind decisions".</p></div>
+    </article>
+
+    <article class="option rec" id="opt-b">
+      <div class="option-head"><span class="letter">B</span><h3>Excerpts inside each memory</h3><span class="pill p-acc">Current proposal (agent call)</span></div>
+      <p>When the agent drafts a memory, it includes short verbatim excerpts: the user's exact words, the exact error, the key line of output. Capped at about 1–2 KB per memory, plus commit/PR links.</p>
+      <div class="kv">
+        <div><b>Committed</b>Memory files with an <code>## Evidence</code> section of quotes</div>
+        <div><b>Local only</b>Optional: our own event log from hooks, not committed</div>
+        <div><b>Gist kept</b>User's words first; zoom to source (one level)</div>
+      </div>
+      <div class="pc">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Keeps the "why" in the user's own words, right where it's needed</li>
+          <li>Works in every harness: the agent supplies excerpts through <code>memory_draft</code>, no transcript parsing</li>
+          <li>Tiny: decades before repo size matters</li>
+          <li>No summarizer, no model API key, no background jobs</li>
+          <li>Agents pick what's relevant, so secrets are rarely copied (and can be scanned)</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Lossy: anything the agent didn't excerpt is gone for teammates</li>
+          <li>Excerpt quality depends on the drafting prompt and the model</li>
+          <li>Breaks the gist's core promise that nothing is ever lost</li>
+          <li>Can't answer questions nobody thought to save a memory about</li>
+        </ul></div>
+      </div>
+      <div class="scope"><h4>Scope impact</h4><p>Adds: an evidence section to the memory format, excerpt validation and size caps, secret scanning of memory files. The summary tree, compactor and transcript capture all move out of v1.</p></div>
+    </article>
+
+    <article class="option" id="opt-c">
+      <div class="option-head"><span class="letter">C</span><h3>Excerpts + committed session summary trees</h3></div>
+      <p>Everything in B, plus each session's gist-style 512-byte summary tree committed to the repo. Teammates can zoom from a memory into the summaries of the session it came from, but not to raw messages.</p>
+      <div class="kv">
+        <div><b>Committed</b>B + <code>.memory/sessions/&lt;author&gt;/&lt;id&gt;.tree.jsonl</code></div>
+        <div><b>Local only</b>Raw event log</div>
+        <div><b>Gist kept</b>Summary tree, compaction, multi-level zoom</div>
+      </div>
+      <div class="pc">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Much richer context for "how did we get here?"</li>
+          <li>Recovers detail nobody thought to save a memory about</li>
+          <li>The closest faithful use of the gist that's still a reasonable size</li>
+          <li>One file per session, so still conflict-free</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Needs a summarizer: ≈2 cheap-model calls per logged event, about 3 million a year for the team. Needs a model API key, or Copilot CLI in Actions using AI Credits</li>
+          <li>Needs capture hooks in every harness (VS Code hooks are preview; formats are unstable)</li>
+          <li>Summaries copy ids, paths and errors exactly, so they can copy secrets too</li>
+          <li>Hundreds of MB a year in permanent history</li>
+        </ul></div>
+      </div>
+      <div class="scope"><h4>Scope impact</h4><p>Adds: hook adapters (<code>.github/hooks</code> + Claude config), a normalized event log, a compactor (prompt, ruler, retries, queues, parallelism), a model dependency and cost, a tree format, multi-level zoom, and a secret scan of summaries. Roughly doubles v1.</p></div>
+    </article>
+
+    <article class="option" id="opt-d">
+      <div class="option-head"><span class="letter">D</span><h3>The full gist: raw logs + trees committed</h3></div>
+      <p>Everything in C, plus the raw event log (tool output clipped) committed. Nothing is lost for anyone on the team.</p>
+      <div class="kv">
+        <div><b>Committed</b>C + <code>.memory/sessions/&lt;author&gt;/&lt;id&gt;.log.jsonl</code></div>
+        <div><b>Local only</b>Nothing extra</div>
+        <div><b>Gist kept</b>All of it, except the view and cache design</div>
+      </div>
+      <div class="pc">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Keeps the gist's promise: zoom all the way to the verbatim message</li>
+          <li>Maximum material for future audits and evals</li>
+          <li>Nothing depends on the agent choosing what to save</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>≈1–3 GB a year: past GitHub's 1 GB guidance within about a year, permanently, in every clone</li>
+          <li>Highest secret risk: raw tool output includes env vars and tokens</li>
+          <li>Slower clones and fetches for everyone, including CI</li>
+          <li>Removing it later means rewriting history for the whole team</li>
+        </ul></div>
+      </div>
+      <div class="scope"><h4>Scope impact</h4><p>Everything in C, plus strict secret scanning of raw logs, clipping rules, a repo-size management plan, and likely a migration later. The largest scope, and the one most likely to hit the anti-goal "it becomes a chore".</p></div>
+    </article>
+
+    <article class="option" id="opt-e">
+      <div class="option-head"><span class="letter">E</span><h3>Excerpts in the repo, sessions in a separate store</h3></div>
+      <p>B in the code branch. Session trees (C) or full logs (D) go somewhere that doesn't bloat code history: an orphan branch such as <code>memory-evidence</code>, Git LFS, or a separate evidence repo. Memories reference sessions by id; the tool fetches them on demand.</p>
+      <div class="kv">
+        <div><b>Committed to code branch</b>B only</div>
+        <div><b>Separate store</b>Session trees and/or raw logs</div>
+        <div><b>Gist kept</b>As much as C or D, without the repo cost</div>
+      </div>
+      <div class="pc">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Code repo stays lean; clones stay fast</li>
+          <li>Teammates can still zoom into each other's sessions</li>
+          <li>The evidence store can be pruned or rewritten without touching code history</li>
+          <li>Can be added later on top of B without changing the memory format</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Still needs the summarizer and capture hooks from C</li>
+          <li>Evidence is no longer branch-aware: it lives in one shared, append-only store</li>
+          <li>Extra plumbing: syncing an orphan branch, LFS quotas (10 GiB free), or a second repo's access</li>
+          <li>"Pull a branch, get its memories" holds for memories, but evidence needs a separate fetch</li>
+        </ul></div>
+      </div>
+      <div class="scope"><h4>Scope impact</h4><p>C's or D's scope, plus storage plumbing and on-demand fetch in <code>memory_zoom</code>. Best treated as a later phase, not v1.</p></div>
+    </article>
+
+  </div>
+</section>
+
+<section id="path">
+  <span class="eyebrow">Proposed (agent call)</span>
+  <h2>Suggested path: B now, keep the door open to E</h2>
+  <div class="callout">
+    <div class="path">
+      <div class="step"><span class="when">v1</span><p><strong>Option B.</strong> Excerpts inside memories. No summarizer, works in every harness, tiny. Memory format reserves <code>evidence:</code> references so session ids can be added later without changing anything.</p></div>
+      <div class="step"><span class="when">v1, optional</span><p><strong>Local event log.</strong> Hooks write our own normalized log (the gist's log format) to a gitignored folder. Costs little, survives Claude Code's 30-day cleanup, and gives real data for the next step.</p></div>
+      <div class="step"><span class="when">after evals</span><p><strong>Measure.</strong> Use the retrieval eval set. If agents keep missing context that excerpts didn't keep, that's the evidence for richer evidence.</p></div>
+      <div class="step"><span class="when">v2, if needed</span><p><strong>Option E with session trees.</strong> Add the gist's compactor and push session trees to a separate store. The local logs from v1 can be backfilled.</p></div>
+    </div>
+  </div>
+  <p class="note">Why: it keeps v1 small and harness-agnostic, avoids a permanent repo-size decision, and defers the costliest work (summarizer, hooks everywhere) until data shows it's needed. Cost: teammates can't zoom into each other's full sessions in v1.</p>
+</section>
+
+<section id="decide">
+  <span class="eyebrow">Open</span>
+  <h2>Questions that decide it</h2>
+  <ol class="qs">
+    <li><strong>Is "nothing is ever lost, for the whole team" a requirement or a nice-to-have?</strong> If it's a requirement, only D or E (with full logs) qualify.</li>
+    <li><strong>Must teammates be able to zoom into each other's sessions?</strong> If yes, C or E. If excerpts are enough, B.</li>
+    <li><strong>Who pays for summarization, and how?</strong> A model API key per team, or Copilot CLI in GitHub Actions billed in AI Credits. Options C, D and E all need one.</li>
+    <li><strong>How much repo growth is acceptable?</strong> Megabytes (A, B), hundreds of MB a year (C), or gigabytes (D).</li>
+  </ol>
+</section>
+
+</div>

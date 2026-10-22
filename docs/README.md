@@ -29,6 +29,8 @@ an accepted one. Supersede it with a new record instead.
 | [0006](decisions/0006-agent-drafts-human-reviews.md) | Agents draft memories; humans review them in PRs | Accepted (user) |
 | [0007](decisions/0007-memory-supplements-skills.md) | Memory supplements skills and helps them evolve | Accepted (user) |
 | [0008](decisions/0008-search-then-zoom-retrieval.md) | Layered retrieval: digest, search, zoom | Proposed (agent call) |
+| [0009](decisions/0009-memory-map-instead-of-line-review.md) | PRs show a memory map instead of line-by-line review (amends 0006) | Accepted (user) |
+| [0010](decisions/0010-memory-map-delivery.md) | Memory map: Mermaid PR comment for changes, local interactive HTML for the whole tree | Accepted (user) |
 
 ## Architecture
 
@@ -43,6 +45,18 @@ an accepted one. Supersede it with a new record instead.
 
 - [Pitfalls](pitfalls.md): problems to design for, with candidate
   mitigations.
+
+## Research and explorations
+
+- [Harness and GitHub capabilities](research/2026-10-20-harness-capabilities.md):
+  transcripts, hooks, skills, MCP, size limits, Mermaid, summarizer models.
+- [Evidence options](explorations/evidence-options.html): what session
+  evidence to commit, with pros, cons and scope per option (open in a
+  browser).
+
+## Future work
+
+- [Future](future.md): ideas noted for later, not in scope now.
 
 ## Design and plans
 

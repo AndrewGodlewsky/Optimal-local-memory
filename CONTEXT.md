@@ -56,6 +56,25 @@ the rest:
   measure of success is whether agents achieve the intended outcome more
   often.
 
+## Anti-goals (user)
+
+The project has failed, even if it technically works, if any of these
+happen:
+
+1. **Agents do no better (or worse) with memory on than off.** Memory adds
+   tokens and distraction without raising the task success rate.
+2. **The team can't see what memory changed.** Nobody can tell at a glance
+   what a PR added to memory, so memory drifts unnoticed.
+3. **Memory goes stale and misleads.** Agents act confidently on outdated
+   decisions. Wrong memory is worse than no memory.
+4. **It becomes a chore.** Developers have to manage memory by hand, which
+   costs more attention than it saves.
+5. **It only really works in one harness.** It must work in Copilot, where
+   the team actually works, not just in Claude Code.
+
+Not goals: capturing everything; replacing documentation, ADRs or code
+comments; answering what agents can learn by reading the code.
+
 ## What memory holds (user)
 
 All of it specific to this repo:
@@ -91,9 +110,22 @@ accumulated context for it.
 ## Capture and review (user)
 
 At the end of a task, the agent **drafts memories automatically** as files
-in the branch. The developer sees them in their diff, and the team reviews
-them in the PR like code. Nothing becomes shared memory without a human
-seeing it, but nobody has to remember to write it.
+in the branch, so nobody has to remember to write them.
+
+The team does **not** review each memory line by line. Each PR shows a
+**node graph of the memories it adds or changes, and where they attach**
+(code and process anchors), so anyone can see at a high level which parts
+of memory grew. We accept trusting the summarization itself. See
+[decision 0009](docs/decisions/0009-memory-map-instead-of-line-review.md).
+
+The map comes in two forms ([decision 0010](docs/decisions/0010-memory-map-delivery.md)):
+a PR comment from a GitHub Action showing this PR's changes (summary,
+Mermaid diagram, linked list of memories), and a local interactive HTML
+map of the whole tree (`memory map --open`).
+
+A later **audit process** (pruning irrelevant memories, checking whether
+memories actually helped agents) is future work, not in scope now. See
+[docs/future.md](docs/future.md).
 
 ## Retrieval direction (agent call, discussed and accepted in direction)
 
@@ -139,7 +171,6 @@ point into memory, and a retrieval eval set of real questions.
 
 ## Open questions
 
-- Anti-goals: what would make this a failure even if it technically works?
 - What exactly is committed: distilled memories only, or also transcripts or
   summaries? In what form?
 - How a memory is retired or marked superseded.

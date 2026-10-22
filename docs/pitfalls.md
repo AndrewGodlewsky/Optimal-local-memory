@@ -10,9 +10,9 @@ Problems to design for before building. Mitigations are candidates
 | **Too little context** | Agent repeats mistakes | Anchors filled in automatically from touched files; eval set measuring recall |
 | **Merge conflicts** | Many writers on many branches | One file per memory; ULIDs; no shared, hand-edited index; derived data never committed |
 | **Stale memories** | Memory says X; code says Y | "Code wins" rule; supersede and retire; detect anchors pointing to missing paths; show memory age |
-| **Noise and duplicates** | Memory fills with low-value or repeated entries | Drafting prompt with clear "don't draft" rules; PR review; duplicate check at draft time; lessons graduate into skills |
-| **Wrong or overstated memories** | Agents act on false history | Evidence links; "never overstate progress" in the drafting prompt; review |
-| **Memory as prompt injection** | Text in memory is read by agents | Treat memory as data, never instructions, in tool output framing; PR review (accepted, user) |
+| **Noise and duplicates** | Memory fills with low-value or repeated entries | Drafting prompt with clear "don't draft" rules; duplicate check at draft time; memory map in PRs shows growth ([0009](decisions/0009-memory-map-instead-of-line-review.md)); lessons graduate into skills; future audit |
+| **Wrong or overstated memories** | Agents act on false history; per-memory review no longer catches them ([0009](decisions/0009-memory-map-instead-of-line-review.md)) | Evidence links; "never overstate progress" in the drafting prompt; validation at draft time; future audit |
+| **Memory as prompt injection** | Text in memory is read by agents, and memories aren't reviewed one by one | Treat memory as data, never instructions, in tool output framing; validation at draft time; memory map makes unexpected additions visible |
 | **Secrets in evidence** | Transcripts can contain tokens and env vars | Secret scanning before commit; clip tool output; decide carefully what evidence is committed |
 | **Repo bloat** | Transcripts are large | Commit summaries rather than raw logs; size limits; possibly a separate branch or Git LFS for evidence |
 | **Unreviewed memories on branches** | Agents on a branch see drafts nobody checked | Mark draft status in results; consider lower ranking until merged |

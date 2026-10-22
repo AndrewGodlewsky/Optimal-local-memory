@@ -13,10 +13,10 @@ agent works on a task
 end of task: agent drafts memories  ──►  .memory/memories/*.md on the branch
       │
       ▼
-developer sees them in their diff (keeps, edits or deletes)
+developer can see them in their diff (optional: keep, edit or delete)
       │
       ▼
-PR review: team reviews memories alongside the code
+PR: a memory map shows what was added and where (decision 0009)
       │
       ▼
 merge: memories become shared on the target branch
@@ -40,17 +40,23 @@ that makes work look further along than it is.
 
 ## How capture is triggered, per harness
 
+Based on [research](../research/2026-10-20-harness-capabilities.md):
+
 | Harness | Mechanism (draft) | Reliability |
 |---|---|---|
-| Claude Code | `Stop` or `SessionEnd` hook prompts the agent to draft memories; hooks can also log the session as evidence | High |
-| Copilot in VS Code | Instruction: "before finishing, call `memory_draft` for anything worth keeping"; possibly a prompt file the developer runs | Medium: depends on the model following it |
-| Other Copilot harnesses (CLI, coding agent) | Same instructions; any hooks they offer | Varies; to verify per harness |
+| Claude Code | `Stop` / `SessionEnd` hooks prompt drafting; event hooks can log the session as evidence (config in `.claude/settings.json`) | High |
+| Copilot in VS Code | Instructions to call `memory_draft`, plus hooks (preview) from `.github/hooks/*.json`: `Stop`, `PostToolUse`, `UserPromptSubmit`. No `SessionEnd` | Medium–high |
+| Copilot CLI | Same `.github/hooks/*.json`; has `sessionEnd` and `agentStop` | Medium–high |
+| Copilot coding agent | Same `.github/hooks/*.json`; ephemeral VM, so anything kept must be committed in the job; MCP is tools-only and set in repo settings | Medium |
 
 ## Evidence capture
 
-If session evidence is kept ([storage](storage.md), open), it needs a
-transcript. Claude Code hooks expose the transcript path. Copilot harnesses
-store chat history differently, and what's accessible needs research.
+If session evidence is kept ([storage](storage.md), open), every target
+harness can supply it: hooks receive a transcript path and per-event
+fields. All vendors call their transcript formats unstable, so the safer
+route is to build our own normalized event log from hook fields (prompt,
+tool name, args, result), close to the gist's own log format. See the
+[evidence options](../explorations/evidence-options.html).
 
 ## Open questions
 
